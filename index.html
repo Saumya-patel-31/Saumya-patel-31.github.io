@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0d14" />
+  <title>Saumya Patel — Portfolio</title>
+  <meta name="description" content="Saumya Patel — Computer Science student at UMBC, full-stack developer behind Campusly. Next.js, Supabase, Python, OpenCV." />
+
+  <!-- Favicon — stylised S/$ in the portfolio's dark + orange palette -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
+  <link rel="mask-icon" href="favicon.svg" color="#ff5a2e" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============ LOADER ============ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__grid">
+      <span class="loader__tag">Portfolio</span>
+      <span class="loader__title"><em>Saumya</em> Patel</span>
+      <span class="loader__bar"><i id="loaderFill"></i></span>
+      <span class="loader__pct" id="loaderPct">0%</span>
+    </div>
+  </div>
+
+  <!-- ============ CURSOR ============ -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ============ BACKGROUND STACK (fixed) ============ -->
+  <div class="bg" id="bgStack" aria-hidden="true">
+    <div class="bg__layer" data-section="hero"    style="background-image:url('images/hero.png')"></div>
+    <div class="bg__layer" data-section="about"   style="background-image:url('images/about.png')"></div>
+    <div class="bg__layer" data-section="work"    style="background-image:url('images/work.png')"></div>
+    <div class="bg__layer" data-section="art"     style="background-image:url('images/art.png')"></div>
+    <div class="bg__layer" data-section="process" style="background-image:url('images/process.png')"></div>
+    <div class="bg__layer" data-section="contact" style="background-image:url('images/contact.png')"></div>
+
+    <div class="bg__tint"></div>
+    <div class="bg__grain"></div>
+    <div class="bg__vignette"></div>
+    <div class="bg__noise"></div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <a class="nav__logo" href="#hero" data-cursor="link">
+      <span class="nav__logo-mark">◉</span>
+      <span class="nav__logo-text">Saumya<em>.</em></span>
+    </a>
+    <nav class="nav__links">
+      <a href="#about"   data-num="01" data-cursor="link"><span>About</span></a>
+      <a href="#work"    data-num="02" data-cursor="link"><span>Work</span></a>
+      <a href="#art"     data-num="03" data-cursor="link"><span>Taste</span></a>
+      <a href="#process" data-num="04" data-cursor="link"><span>Process</span></a>
+      <a href="#contact" data-num="05" data-cursor="link"><span>Contact</span></a>
+    </nav>
+    <a class="nav__cta" href="#contact" data-cursor="btn">
+      <span class="nav__cta-dot"></span>
+      <span>Open to roles &amp; internships</span>
+    </a>
+  </header>
+
+  <!-- ============ PROGRESS ============ -->
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+  <!-- ============ HERO ============ -->
+  <section class="section hero" id="hero" data-bg="hero">
+    <div class="hero__head">
+      <span class="kbd">Portfolio</span>
+      <span class="kbd">UMBC · B.S. Computer Science</span>
+    </div>
+
+    <h1 class="hero__title reveal-lines">
+      <span class="line"><span>Just a CS student</span></span>
+      <span class="line"><span>refusing to feel</span></span>
+      <span class="line"><span><em>ordinary.</em></span></span>
+    </h1>
+
+    <div class="hero__foot">
+      <div class="hero__blurb">
+        <span class="dot-live"></span>
+        <p>Saumya Patel — full-stack developer &amp; UMBC CS junior.<br/>
+        Shipped <a href="https://campusly.us" target="_blank" rel="noopener" class="inline-link">campusly.us</a>
+        from localhost to production, now serving 35+ active users.</p>
+      </div>
+
+      <a class="scroll-hint" href="#about" data-cursor="link">
+        <span>Scroll</span>
+        <span class="scroll-hint__line"><i></i></span>
+      </a>
+
+      <div class="hero__meta">
+        <span>Hello</span>
+        <span>Hanover, MD</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Next.js</span><span>◆</span>
+      <span>Supabase</span><span>◆</span>
+      <span>PostgreSQL</span><span>◆</span>
+      <span>Python &amp; OpenCV</span><span>◆</span>
+      <span>C / C++</span><span>◆</span>
+      <span>Data Structures</span><span>◆</span>
+      <span>Next.js</span><span>◆</span>
+      <span>Supabase</span><span>◆</span>
+      <span>PostgreSQL</span><span>◆</span>
+      <span>Python &amp; OpenCV</span><span>◆</span>
+      <span>C / C++</span><span>◆</span>
+      <span>Data Structures</span><span>◆</span>
+    </div>
+  </div>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="section about" id="about" data-bg="about">
+    <div class="section__index">
+      <span>(01)</span><span>— About</span>
+    </div>
+    <div class="about__grid">
+      <h2 class="about__headline reveal-lines">
+        <span class="line"><span>I'm Saumya — a CS junior</span></span>
+        <span class="line"><span>at UMBC who ships real</span></span>
+        <span class="line"><span><em>products,</em> not just demos.</span></span>
+      </h2>
+
+      <div class="about__body">
+        <p class="about__para reveal">
+          Somewhere between a <em>3.8 GPA</em> and a long string of late-night
+          side projects, I figured out that I learn faster by shipping than by
+          studying. So I do — .edu OTP auth, Supabase Realtime DMs, OpenCV blink
+          detectors, Arduino soil sensors. Whatever the problem rewards, I pick
+          up and wire together.
+        </p>
+
+        <ul class="about__stats">
+          <li class="reveal"><b>3.8</b><span>GPA · President's List</span></li>
+          <li class="reveal"><b>35+</b><span>Active users on Campusly</span></li>
+          <li class="reveal"><b>10+</b><span>Languages in rotation</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WORK ============ -->
+  <section class="section work" id="work" data-bg="work">
+    <div class="section__index">
+      <span>(02)</span><span>— Selected Work</span>
+    </div>
+
+    <h2 class="work__headline reveal-lines">
+      <span class="line"><span>Real projects,</span></span>
+      <span class="line"><span>real users,</span></span>
+      <span class="line"><span><em>live in production.</em></span></span>
+    </h2>
+
+    <div class="work__list">
+
+      <a class="project reveal" href="https://linkedin.com/in/saumya31" target="_blank" rel="noopener" data-cursor="view" data-index="01">
+        <div class="project__meta">
+          <span>01 / Current Role</span>
+          <span>Feb 2026 — Present</span>
+        </div>
+        <h3 class="project__title">TutorMatch — Student Ambassador</h3>
+        <p class="project__desc">
+          Running multi-platform referral campaigns across UMBC Snapchat
+          communities, Instagram, TikTok and Discord to recruit tutors for
+          TutorMatch's Ed-Tech matching platform. Owning the full
+          outreach-to-onboarding funnel, with referral attribution tracked
+          through a Stripe-integrated ambassador portal that verifies
+          commission per completed session.
+        </p>
+        <div class="project__tags">
+          <span>Growth</span><span>Funnel ops</span><span>Stripe</span><span>UMBC</span>
+        </div>
+      </a>
+
+      <a class="project reveal" href="https://campusly.us" target="_blank" rel="noopener" data-cursor="view" data-index="02">
+        <div class="project__meta">
+          <span>02 / Full-stack</span>
+          <span>Mar 2026</span>
+        </div>
+        <h3 class="project__title">Campusly — Campus Social Network</h3>
+        <p class="project__desc">
+          Live in production at <em>campusly.us</em> with 35+ active users.
+          Built .edu email OTP auth, a PostgreSQL schema for posts, comments
+          and DMs, and enforced Supabase Row-Level Security so data stays
+          isolated per user and campus. Glassmorphism UI with staggered
+          entrance animations, powered by Supabase Realtime.
+        </p>
+        <div class="project__tags">
+          <span>Next.js</span><span>Supabase</span><span>PostgreSQL</span><span>Vercel</span>
+        </div>
+      </a>
+
+      <a class="project reveal" href="https://github.com/Saumya-patel-31/Moodmap" target="_blank" rel="noopener" data-cursor="view" data-index="03">
+        <div class="project__meta">
+          <span>03 / Computer Vision</span>
+          <span>Apr 2025</span>
+        </div>
+        <h3 class="project__title">MoodMap — Real-Time Fatigue Tracker</h3>
+        <p class="project__desc">
+          A webcam-based drowsiness detector using the Eye Aspect Ratio (EAR)
+          and blink frequency. Calibrates a baseline per user, then triggers
+          audio-visual alerts when alertness dips below threshold — made for
+          late-night study sessions that shouldn't become late-night drives.
+        </p>
+        <div class="project__tags">
+          <span>Python</span><span>OpenCV</span><span>JavaScript</span><span>HTML/CSS</span>
+        </div>
+      </a>
+
+      <a class="project reveal" href="https://github.com/Saumya-patel-31/Visionary" target="_blank" rel="noopener" data-cursor="view" data-index="04">
+        <div class="project__meta">
+          <span>04 / Accessibility · CV</span>
+          <span>Open source</span>
+        </div>
+        <h3 class="project__title">Visionary — Spatial Awareness for the Visually Impaired</h3>
+        <p class="project__desc">
+          A real-time accessibility tool that turns a webcam into a spatial
+          narrator. YOLOv8 Nano detects objects in frame and pyttsx3 speaks
+          them aloud with directional context — left, right, centre — at
+          320px resolution so the whole pipeline stays smooth on CPU. Flask
+          and OpenCV on the backend, a Tailwind + TypeScript interface on top.
+        </p>
+        <div class="project__tags">
+          <span>Python</span><span>YOLOv8</span><span>OpenCV</span><span>Flask</span><span>TypeScript</span>
+        </div>
+      </a>
+
+      <article class="project reveal" data-cursor="locked" data-index="05">
+        <div class="project__meta">
+          <span>05 / IoT · Hardware</span>
+          <span>Jul 2023</span>
+        </div>
+        <h3 class="project__title">IoT Agricultural Soil Classifier</h3>
+        <p class="project__desc">
+          An Arduino-driven sensor rig that logs moisture, pH and nutrient
+          readings to a SQL database, then recommends crop types based on the
+          measured soil conditions. My first real dance with hardware, C++,
+          and the joy of debugging something that lives in the physical world.
+        </p>
+        <div class="project__tags">
+          <span>Arduino</span><span>C++</span><span>SQL</span>
+        </div>
+      </article>
+
+      <a class="project reveal" href="https://linkedin.com/in/saumya31" target="_blank" rel="noopener" data-cursor="view" data-index="06">
+        <div class="project__meta">
+          <span>06 / Consulting simulations</span>
+          <span>2023</span>
+        </div>
+        <h3 class="project__title">Forage · BCG X · Accenture · KPMG</h3>
+        <p class="project__desc">
+          Three virtual internships across data science, analytics &amp;
+          consulting. Framed hypotheses, ran EDA, engineered features, trained
+          a supervised model, then packaged findings into client-facing
+          presentations in each firm's voice. A good reminder that a chart is
+          only as good as the story you wrap around it. Full write-ups live on
+          my LinkedIn experience page.
+        </p>
+        <div class="project__tags">
+          <span>Pandas</span><span>NumPy</span><span>scikit-learn</span><span>Tableau</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ ART / TASTE ============ -->
+  <section class="section art" id="art" data-bg="art">
+    <div class="section__index">
+      <span>(03)</span><span>— Taste</span>
+    </div>
+
+    <h2 class="art__headline reveal-lines">
+      <span class="line"><span>A product is only as</span></span>
+      <span class="line"><span>good as the <em>details</em></span></span>
+      <span class="line"><span>nobody asked for.</span></span>
+    </h2>
+
+    <p class="art__para reveal">
+      I care about the twenty milliseconds between a click and a response, the
+      weight of a single word in a button, and whether an empty state looks
+      lived-in or abandoned. Code is the easy half — taste is what makes a
+      junior project feel like a real product.
+    </p>
+
+    <div class="art__pill-row">
+      <span class="pill reveal">Glassmorphism UI</span>
+      <span class="pill reveal">Microinteractions</span>
+      <span class="pill reveal">Editorial typography</span>
+      <span class="pill reveal">Thoughtful empty states</span>
+      <span class="pill reveal">Real-time UX</span>
+      <span class="pill reveal">Accessible colour</span>
+      <span class="pill reveal">Motion with a purpose</span>
+      <span class="pill reveal">Honest loading states</span>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section class="section process" id="process" data-bg="process">
+    <div class="section__index">
+      <span>(04)</span><span>— Process</span>
+    </div>
+
+    <h2 class="process__headline reveal-lines">
+      <span class="line"><span>Spec less.</span></span>
+      <span class="line"><span>Ship sooner.</span></span>
+      <span class="line"><span><em>Listen harder.</em></span></span>
+    </h2>
+
+    <ol class="timeline">
+      <li class="timeline__step reveal">
+        <span class="timeline__num">01</span>
+        <div>
+          <h4>Write the problem down in one sentence.</h4>
+          <p>Before a schema or a Figma, I force the problem into a single line.
+          If I can't, I'm not ready — and neither is the build.</p>
+        </div>
+      </li>
+      <li class="timeline__step reveal">
+        <span class="timeline__num">02</span>
+        <div>
+          <h4>Ugly prototype by tomorrow.</h4>
+          <p>A rough, clickable slice running on localhost beats a polished
+          mock every time. The sooner I get to a real interaction, the sooner
+          the build stops lying to me about what works.</p>
+        </div>
+      </li>
+      <li class="timeline__step reveal">
+        <span class="timeline__num">03</span>
+        <div>
+          <h4>Lock it down.</h4>
+          <p>Auth flows, RLS policies, empty states, loading states,
+          keyboard traps. Boring work. It's where a side project becomes
+          something you'd let a real user touch.</p>
+        </div>
+      </li>
+      <li class="timeline__step reveal">
+        <span class="timeline__num">04</span>
+        <div>
+          <h4>Ship to production, then listen.</h4>
+          <p>Campusly only started meaning something the day strangers signed
+          up. Localhost answers your questions; production answers theirs.
+          The interface that launches is a first draft.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section contact" id="contact" data-bg="contact">
+    <div class="section__index">
+      <span>(05)</span><span>— Let's build</span>
+    </div>
+
+    <h2 class="contact__headline reveal-lines">
+      <span class="line"><span>Have a thing</span></span>
+      <span class="line"><span>that deserves to</span></span>
+      <span class="line"><span><em>be built well?</em></span></span>
+    </h2>
+
+    <a class="contact__mail" href="mailto:saumyapatel566@gmail.com" data-cursor="btn">
+      <span class="contact__mail-pre">Reach me at</span>
+      <span class="contact__mail-addr">saumyapatel566@gmail.com</span>
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 19L19 5M19 5H8M19 5v11"/></svg>
+    </a>
+
+    <div class="contact__grid">
+      <div class="contact__col reveal">
+        <span class="contact__label">Elsewhere</span>
+        <ul>
+          <li><a href="https://github.com/Saumya-patel-31" target="_blank" rel="noopener" data-cursor="link">GitHub <i>↗</i></a></li>
+          <li><a href="https://linkedin.com/in/saumya31" target="_blank" rel="noopener" data-cursor="link">LinkedIn <i>↗</i></a></li>
+          <li><a href="https://campusly.us" target="_blank" rel="noopener" data-cursor="link">Campusly <i>↗</i></a></li>
+          <li><a href="mailto:saumyapatel566@gmail.com" data-cursor="link">Email <i>↗</i></a></li>
+          <li><a href="tel:+14102401699" data-cursor="link">(410) 240-1699 <i>↗</i></a></li>
+        </ul>
+      </div>
+      <div class="contact__col reveal">
+        <span class="contact__label">Now</span>
+        <p>Junior year at UMBC (graduating Dec 2027). Open to
+        <em>internships &amp; co-ops</em> — engineering, product, data, or any
+        role where a curious junior gets to ship work that real users see.
+        Happy to talk about anything from Next.js and Supabase to Python and
+        Arduino.</p>
+      </div>
+      <div class="contact__col reveal">
+        <span class="contact__label">Based in</span>
+        <p>Hanover, Maryland.<br/>Open to roles anywhere on the East Coast and
+        remote. English &amp; Hindi fluent, Gujarati native.</p>
+      </div>
+    </div>
+
+    <footer class="foot">
+      <span>© 2026 Saumya Patel</span>
+      <span class="foot__mid">Hand-built in HTML, CSS &amp; a lot of chai.</span>
+      <button id="toTop" class="foot__top" data-cursor="btn">Back to top ↑</button>
+    </footer>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
