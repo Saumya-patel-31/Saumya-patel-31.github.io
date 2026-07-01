@@ -31,20 +31,35 @@
     tick();
   });
 
-  const preloadImages = () => {
-    const urls = $$('.bg__layer[style]').map(el =>
-      (el.style.backgroundImage.match(/url\(["']?(.+?)["']?\)/) || [])[1]
-    ).filter(Boolean);
-    return Promise.all(urls.map(src => new Promise(res => {
-      const i = new Image();
-      i.onload = i.onerror = res;
-      i.src = src;
-    })));
+  const bgUrls = () => $$('.bg__layer[style]').map(el =>
+    (el.style.backgroundImage.match(/url\(["']?(.+?)["']?\)/) || [])[1]
+  ).filter(Boolean);
+
+  const load1 = src => new Promise(res => {
+    const i = new Image();
+    i.onload = i.onerror = res;
+    i.src = src;
+  });
+
+  // Only block the loader on the hero image (the sole layer visible at first
+  // paint). The rest are multi-MB PNGs behind later sections — load them in
+  // the background once the page is interactive so time-to-reveal stays low.
+  const preloadHero = () => {
+    const [hero] = bgUrls();
+    return hero ? load1(hero) : Promise.resolve();
   };
 
-  Promise.all([boot(), preloadImages()]).then(() => {
+  const preloadRest = () => {
+    const rest = bgUrls().slice(1);
+    const run = () => rest.forEach(load1);
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: 2000 });
+    else setTimeout(run, 200);
+  };
+
+  Promise.all([boot(), preloadHero()]).then(() => {
     loader.classList.add('is-done');
     document.body.classList.add('is-ready');
+    preloadRest();
     // kick off hero reveal
     const hero = $('#hero .reveal-lines');
     if (hero) requestAnimationFrame(() => hero.classList.add('is-in'));
