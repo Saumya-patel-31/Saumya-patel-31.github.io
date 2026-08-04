@@ -119,6 +119,7 @@
   const bgLayers  = $$('.bg__layer');
   const bgBySlug  = Object.fromEntries(bgLayers.map(l => [l.dataset.section, l]));
   const navLinks  = $$('.nav__links a');
+  const PARALLAX  = 64;   // px of vertical drift across a section (± half this)
 
   // smoothstep — softens the edges of the fade curve so adjacent
   // sections ease in/out instead of fading linearly
@@ -138,9 +139,6 @@
 
     // ---- global scroll-driven CSS vars
     root.style.setProperty('--scroll', p.toFixed(4));
-    root.style.setProperty('--bg-hue',  (-40 * p).toFixed(2) + 'deg');
-    root.style.setProperty('--bg-sat',  (1 + 0.18 * Math.sin(p * Math.PI)).toFixed(3));
-    root.style.setProperty('--bg-blur', (0.8 * Math.sin(p * Math.PI)).toFixed(2) + 'px');
     root.style.setProperty('--nav-veil', clamp(y / 400, 0, 1).toFixed(3));
 
     // ---- per-section bg opacity
@@ -166,7 +164,14 @@
 
       const slug = sec.dataset.bg;
       const layer = bgBySlug[slug];
-      if (layer) layer.style.opacity = score.toFixed(4);
+      if (layer) {
+        layer.style.opacity = score.toFixed(4);
+        // Gentle parallax: the frame drifts up as its section scrolls past,
+        // so the image reads as tied to the content instead of a static crop.
+        const q  = clamp((vcy - rect.top) / rect.height, 0, 1);
+        const ty = prefersReduced ? 0 : (0.5 - q) * PARALLAX;
+        layer.style.transform = `translate3d(0, ${ty.toFixed(1)}px, 0) scale(1.16)`;
+      }
 
       if (score > bestScore) {
         bestScore = score;
@@ -193,6 +198,11 @@
       const mix = smoothstep((q - 0.4) / 0.25);           // ramp Travel in past the midpoint
       workA.style.opacity = (visible * (1 - mix)).toFixed(4);
       workB.style.opacity = (visible * mix).toFixed(4);
+      // both Work frames share the same parallax so the crossfade stays put
+      const ty = prefersReduced ? 0 : (0.5 - q) * PARALLAX;
+      const tf = `translate3d(0, ${ty.toFixed(1)}px, 0) scale(1.16)`;
+      workA.style.transform = tf;
+      workB.style.transform = tf;
     }
 
     // nav active link — just the section closest to viewport center
@@ -295,16 +305,15 @@
 
   /* ----------------------------------------------------------
      10. KEY INTERACTIONS — press 'g' to glitch background briefly
+         One-off filter on the whole stack, then cleared — no per-frame
+         cost, so it doesn't reintroduce scroll jank.
   ---------------------------------------------------------- */
+  const bgStack = $('#bgStack');
   window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'g') {
-      root.style.transition = 'filter .12s';
-      root.style.setProperty('--bg-blur', '6px');
-      root.style.setProperty('--bg-hue', '180deg');
-      setTimeout(() => {
-        root.style.setProperty('--bg-blur', '0px');
-        root.style.setProperty('--bg-hue', (-60 * parseFloat(getComputedStyle(root).getPropertyValue('--scroll'))).toFixed(2) + 'deg');
-      }, 280);
+    if (e.key.toLowerCase() === 'g' && bgStack) {
+      bgStack.style.transition = 'filter .28s var(--ease)';
+      bgStack.style.filter = 'hue-rotate(180deg) saturate(1.6) blur(3px)';
+      setTimeout(() => { bgStack.style.filter = ''; }, 280);
     }
   });
 })();

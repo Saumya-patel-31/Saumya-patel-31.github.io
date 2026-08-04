@@ -29,9 +29,6 @@
 
   /* scroll-driven (updated by JS) */
   --scroll: 0;           /* 0..1 through page */
-  --bg-hue: 0deg;
-  --bg-sat: 1;
-  --bg-blur: 0px;
 }
 
 /* ---------- reset ---------- */
@@ -188,8 +185,12 @@ ul, ol { list-style: none; }
   background-position: center center;
   background-repeat: no-repeat;
   opacity: 0;
-  filter: saturate(var(--bg-sat)) hue-rotate(var(--bg-hue)) blur(var(--bg-blur));
-  will-change: opacity, filter;
+  transform: scale(1.16);            /* headroom for the JS parallax drift */
+  /* Only opacity + transform change per frame — both composite on the GPU,
+     so the crossfade stays smooth. (The old per-frame blur()/hue-rotate()
+     filter here repainted all layers full-screen every frame — the lag.) */
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 .bg__layer--solid { background: radial-gradient(ellipse at 50% 30%, #121826 0%, #05070c 70%); }
 
