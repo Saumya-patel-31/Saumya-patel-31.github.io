@@ -351,20 +351,28 @@
       id: 'about',
       kw: [['who are you', 4], ['about you', 4], ['tell me about', 3], ['who is saumya', 4], ['your story', 3], ['bio', 2], ['background', 2]],
       reply: () =>
-        `CS junior at UMBC (graduating Dec 2027), GPA 3.8, on the President's List. I build full-stack products end-to-end — <em>Campusly</em> is live with 100+ users. I learn faster by shipping than studying, so I ship.`,
+        `CS junior at UMBC (graduating Dec 2027), GPA 3.8, on the President's List. I just wrapped a software-engineering internship at <em>HeadsUp</em> (React Native + Firebase), and <em>Campusly</em> is live with 100+ users. I learn faster by shipping than studying, so I ship.`,
       chips: ['Show me projects', 'School / GPA', 'Where are you based?'],
+    },
+    {
+      id: 'headsup',
+      kw: [['headsup', 5], ['heads up', 5], ['react native', 4], ['firebase', 4], ['firestore', 4], ['expo', 3], ['swe', 3], ['software engineering intern', 5], ['internship', 3], ['mobile app', 3], ['leaderboard', 3], ['current job', 3], ['experience', 2]],
+      reply: () =>
+        `<em>HeadsUp — Software Engineering Intern</em> (Jun–Aug 2026), my best experience yet. Shipped 15+ screens of a cross-platform iOS/Android/web app in <em>React Native + Expo</em> — full light/dark design system, WCAG colour tokens, custom data viz. Architected a <em>Firebase/Firestore</em> backend across 9 collections with role-based security rules, then built a group-challenge & leaderboard system with a role-scoped admin console. <a href="https://www.linkedin.com/in/saumya31/details/experience/" target="_blank" rel="noopener">See it on LinkedIn →</a>`,
+      chips: ['Show me projects', 'What\'s your stack?', 'How do I reach you?'],
     },
     {
       id: 'projects',
       kw: [['projects', 3], ['project', 2], ['portfolio', 2], ['work', 2], ['built', 2], ['build', 1], ['shipped', 2], ['made', 1], ['what have you', 3]],
       reply: () =>
         `A few that matter:<br>
+         • <em>HeadsUp</em> — my SWE internship; cross-platform React Native app + Firebase backend + leaderboard system<br>
          • <em>Campusly</em> — campus social network, live at <a href="https://campusly.us" target="_blank" rel="noopener">campusly.us</a> with 100+ users<br>
          • <em>MoodMap</em> — OpenCV drowsiness detector using Eye Aspect Ratio<br>
          • <em>Visionary</em> — YOLOv8 spatial narrator for the visually impaired<br>
          • <em>IoT Soil Classifier</em> — Arduino sensor rig with crop recommendations<br>
          Ask me about any of them.`,
-      chips: ['Tell me about Campusly', 'Tell me about MoodMap', 'Tell me about Visionary'],
+      chips: ['Tell me about HeadsUp', 'Tell me about Campusly', 'Tell me about MoodMap'],
     },
     {
       id: 'campusly',
