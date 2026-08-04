@@ -133,7 +133,6 @@
   const onScroll = () => {
     const y  = window.scrollY;
     const vh = window.innerHeight;
-    const vc = y + vh / 2;                       // viewport center (document-space)
     const h  = document.documentElement.scrollHeight - vh;
     const p  = h > 0 ? clamp(y / h, 0, 1) : 0;   // 0..1 page progress
 
@@ -153,11 +152,17 @@
     let bestId    = null;
 
     sections.forEach(sec => {
-      const rect = sec.getBoundingClientRect();
-      const secCenterDoc = rect.top + window.scrollY + rect.height / 2;
-      const dist   = Math.abs(secCenterDoc - vc);
-      const raw    = 1 - dist / vh;
-      const score  = smoothstep(raw);
+      const rect = sec.getBoundingClientRect();   // viewport-relative
+      const vcy  = vh / 2;                         // viewport center
+      // Distance from the viewport center to the section's NEAREST EDGE —
+      // 0 whenever the center sits anywhere inside the section. This keeps
+      // tall sections (Work stacks 6 projects) fully lit across their whole
+      // length instead of fading to black in the middle.
+      const d = rect.top > vcy    ? rect.top - vcy
+              : rect.bottom < vcy ? vcy - rect.bottom
+              : 0;
+      const raw   = 1 - d / (vh * 0.6);            // ~0.6vh crossfade between sections
+      const score = smoothstep(raw);
 
       const slug = sec.dataset.bg;
       const layer = bgBySlug[slug];
@@ -169,6 +174,26 @@
         bestId    = sec.id;
       }
     });
+
+    // ---- Work carries two backgrounds that cross-fade across its long
+    // project list: Brooklyn Bridge up top → Travel toward the lower
+    // projects. The generic loop above already lit the 'work' layer to the
+    // section's visibility; here we re-split that same visibility between the
+    // two frames based on how far the viewport has travelled through Work, so
+    // their opacities always sum to it (no black, no double-exposure).
+    const workSec = document.getElementById('work');
+    const workA = bgBySlug['work'];    // Brooklyn Bridge
+    const workB = bgBySlug['work2'];   // Travel
+    if (workSec && workA && workB) {
+      const r  = workSec.getBoundingClientRect();
+      const cy = vh / 2;
+      const d  = r.top > cy ? r.top - cy : r.bottom < cy ? cy - r.bottom : 0;
+      const visible = smoothstep(1 - d / (vh * 0.6));
+      const q   = clamp((cy - r.top) / r.height, 0, 1);   // 0 → 1 through the section
+      const mix = smoothstep((q - 0.4) / 0.25);           // ramp Travel in past the midpoint
+      workA.style.opacity = (visible * (1 - mix)).toFixed(4);
+      workB.style.opacity = (visible * mix).toFixed(4);
+    }
 
     // nav active link — just the section closest to viewport center
     if (bestId) {
