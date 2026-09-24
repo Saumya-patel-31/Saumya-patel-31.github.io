@@ -403,10 +403,17 @@
       chips: ['Other projects', 'What\'s your stack?'],
     },
     {
+      id: 'peertutor',
+      kw: [['peer tutor', 5], ['peer education', 4], ['cmsc', 5], ['cmsc 201', 5], ['cmsc 202', 5], ['cmsc 203', 5], ['teaching', 4], ['teach', 3], ['tutoring', 3], ['mentor', 3], ['tutor', 2], ['currently', 2]],
+      reply: () =>
+        `<em>Peer Tutor at UMBC</em> (Aug 2026 → now) — my current role. Selected on faculty recommendation to tutor all three intro CS sequences: <em>CMSC 201</em> (Python), <em>CMSC 202</em> (C++/OOP) and <em>CMSC 203</em> (Discrete Structures). In walk-in sessions I coach debugging, data structures, memory management and proof techniques — and push students to read their own compiler errors so they leave able to debug without me.`,
+      chips: ['What have you built?', 'What\'s your stack?', 'How do I reach you?'],
+    },
+    {
       id: 'tutormatch',
       kw: [['tutormatch', 5], ['tutor match', 5], ['ambassador', 3], ['referral', 2]],
       reply: () =>
-        `<em>TutorMatch Student Ambassador</em> (Feb 2026 → now). Running multi-platform referral campaigns across UMBC Snapchat communities, Instagram, TikTok and Discord, owning the outreach-to-onboarding funnel with Stripe-integrated commission tracking.`,
+        `<em>TutorMatch Student Ambassador</em> (Feb–Sep 2026). Ran multi-platform referral campaigns across UMBC Snapchat communities, Instagram, TikTok and Discord, owning the outreach-to-onboarding funnel with Stripe-integrated commission tracking.`,
       chips: ['What have you built?', 'How do I reach you?'],
     },
     {
