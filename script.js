@@ -88,7 +88,7 @@
     tick();
 
     const setState = (type) => {
-      ['link', 'btn', 'view', 'locked'].forEach(k => {
+      ['link', 'btn', 'view'].forEach(k => {
         dot.classList.toggle('is-' + k, k === type);
         ring.classList.toggle('is-' + k, k === type);
       });
@@ -110,6 +110,95 @@
   }
 
   /* ----------------------------------------------------------
+     2b. TEXT FX — word splitting, read-along, scramble, count-up
+  ---------------------------------------------------------- */
+  // Wrap every word under `root` in <span class=cls>, keeping child
+  // elements (<em>, <a>…) intact so styling and links survive.
+  const splitWords = (root, cls, onWord) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      if (!node.textContent.trim()) return;
+      const frag = document.createDocumentFragment();
+      node.textContent.split(/(\s+)/).forEach(part => {
+        if (!part) return;
+        if (!part.trim()) { frag.appendChild(document.createTextNode(part)); return; }
+        const w = document.createElement('span');
+        w.className = cls;
+        w.textContent = part;
+        if (onWord) onWord(w);
+        frag.appendChild(w);
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
+  };
+
+  // kinetic headlines: words rise one after another (CSS staggers on --wi)
+  if (!prefersReduced) {
+    $$('.reveal-lines').forEach(h => {
+      let wi = 0;
+      splitWords(h, 'w', w => w.style.setProperty('--wi', wi++));
+      h.classList.add('is-split');
+    });
+  }
+
+  // read-along paragraphs: onScroll feeds --p (0..1); each word lights in turn
+  const scrubs = $$('[data-scrub]');
+  scrubs.forEach(el => {
+    let i = 0;
+    splitWords(el, 'w', w => w.style.setProperty('--i', i++));
+    el.style.setProperty('--n', i);
+    el.style.setProperty('--p', prefersReduced ? 1 : 0);
+  });
+
+  // text scramble — random glyphs that resolve into the target text
+  const GLYPHS = '!<>-_/[]{}=+*^?#ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+  const esc = c => c === '<' ? '&lt;' : c === '>' ? '&gt;' : c === '&' ? '&amp;' : c;
+  const scramble = (el, to, { frames = 26, tint = true } = {}) => {
+    cancelAnimationFrame(el._scr);
+    if (prefersReduced) { el.textContent = to; return; }
+    const from = el.textContent;
+    const q = Array.from({ length: Math.max(from.length, to.length) }, (_, i) => {
+      const start = Math.floor(Math.random() * frames * 0.5);
+      const end = start + Math.ceil(frames * 0.5) + Math.floor(Math.random() * frames * 0.5);
+      return { from: from[i] || '', to: to[i] || '', start, end, ch: '' };
+    });
+    let f = 0;
+    const tick = () => {
+      let out = '', done = 0;
+      for (const c of q) {
+        if (f >= c.end) { done++; out += esc(c.to); }
+        else if (f >= c.start) {
+          if (!c.ch || Math.random() < 0.3) c.ch = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          out += tint ? `<span class="scramble-ch">${esc(c.ch)}</span>` : esc(c.ch);
+        } else out += esc(c.from);
+      }
+      if (done === q.length) { el.textContent = to; return; }
+      el.innerHTML = out;
+      f++;
+      el._scr = requestAnimationFrame(tick);
+    };
+    tick();
+  };
+
+  // count-up for stats; starts from 0 once the stat scrolls into view
+  const counters = $$('[data-count]');
+  const fmtCount = (el, v) => v.toFixed(+(el.dataset.decimals || 0)) + (el.dataset.suffix || '');
+  if (!prefersReduced) counters.forEach(el => { el.textContent = fmtCount(el, 0); });
+  const countUp = (el) => {
+    const end = parseFloat(el.dataset.count);
+    if (prefersReduced) { el.textContent = fmtCount(el, end); return; }
+    const t0 = performance.now(), dur = 1500;
+    const tick = (now) => {
+      const t = clamp((now - t0) / dur, 0, 1);
+      el.textContent = fmtCount(el, end * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  /* ----------------------------------------------------------
      3. BACKGROUND CROSS-FADE + SCROLL FILTER + NAV SPY
          opacity for each bg layer is computed continuously from
          each section's position in the viewport — adjacent sections
@@ -129,6 +218,7 @@
   };
 
   const root     = document.documentElement;
+  const bgFocus  = $('#bgFocus');
   let scrollRAF  = null;
 
   const onScroll = () => {
@@ -148,6 +238,7 @@
     let bestScore = -1;
     let bestSlug  = null;
     let bestId    = null;
+    let heroScore = 0;
 
     sections.forEach(sec => {
       const rect = sec.getBoundingClientRect();   // viewport-relative
@@ -164,6 +255,7 @@
 
       const slug = sec.dataset.bg;
       const layer = bgBySlug[slug];
+      if (slug === 'hero') heroScore = score;
       if (layer) {
         layer.style.opacity = score.toFixed(4);
         // Gentle parallax: the frame drifts up as its section scrolls past,
@@ -205,6 +297,19 @@
       workB.style.transform = tf;
     }
 
+    // ---- focus dimmer: art at full strength on the hero, calmer once you're reading
+    if (bgFocus) bgFocus.style.opacity = (1 - heroScore).toFixed(3);
+
+    // ---- read-along: 0 when a paragraph enters at 88% of the viewport,
+    // 1 once its last line has risen past 45% (reads, then writes)
+    if (!prefersReduced && scrubs.length) {
+      const ps = scrubs.map(el => {
+        const r = el.getBoundingClientRect();
+        return clamp((vh * 0.88 - r.top) / (vh * 0.43 + r.height), 0, 1);
+      });
+      scrubs.forEach((el, i) => el.style.setProperty('--p', ps[i].toFixed(3)));
+    }
+
     // nav active link — just the section closest to viewport center
     if (bestId) {
       navLinks.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + bestId));
@@ -228,6 +333,8 @@
     entries.forEach(e => {
       if (e.isIntersecting) {
         e.target.classList.add('is-in');
+        const n = e.target.querySelector('[data-count]');
+        if (n) countUp(n);
         revealObserver.unobserve(e.target);
       }
     });
@@ -265,21 +372,122 @@
   }
 
   /* ----------------------------------------------------------
-     7. PROJECT TILT ON HOVER
+     7. PROJECT SPOTLIGHT — a soft glow that follows the cursor
   ---------------------------------------------------------- */
-  if (!prefersReduced && window.matchMedia('(hover: hover)').matches) {
+  if (window.matchMedia('(hover: hover)').matches) {
     $$('.project').forEach(el => {
-      const inner = el;
-      el.addEventListener('mousemove', (e) => {
+      let raf = null, mx = 0, my = 0;
+      el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        inner.style.transform = `perspective(1000px) rotateX(${-y * 1.2}deg) rotateY(${x * 1.8}deg) translateZ(0)`;
-      });
-      el.addEventListener('mouseleave', () => {
-        inner.style.transform = '';
+        mx = e.clientX - r.left; my = e.clientY - r.top;
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          el.style.setProperty('--mx', mx + 'px');
+          el.style.setProperty('--my', my + 'px');
+          raf = null;
+        });
       });
     });
+  }
+
+  /* ----------------------------------------------------------
+     7b. PROCESS — the step in the middle of the screen lights up,
+         and the matching lines of process.ts light up with it
+  ---------------------------------------------------------- */
+  const steps = $$('#processSteps .timeline__step');
+  const codeCard = $('#codeCard');
+  const codeStatus = $('#codeStatus');
+  if (steps.length && codeCard) {
+    const lines = $$('.code-line', codeCard);
+    lines.forEach((ln, i) => ln.style.setProperty('--li', i));
+    $('#processSteps').classList.add('is-live');
+    const firstLine = n => lines.findIndex(l => l.dataset.step === String(n)) + 1;
+    let current = 0;
+    const activate = (n) => {
+      if (n === current) return;
+      current = n;
+      steps.forEach(st => st.classList.toggle('is-active', st.dataset.step === String(n)));
+      codeCard.classList.add('has-active');
+      lines.forEach(l => l.classList.toggle('is-on', l.dataset.step === String(n)));
+      if (codeStatus) codeStatus.textContent = `Ln ${firstLine(n)}, Col 5 · step 0${n}`;
+    };
+    activate(1);
+    const stepObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) activate(+e.target.dataset.step); });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    steps.forEach(st => {
+      stepObs.observe(st);
+      st.addEventListener('mouseenter', () => activate(+st.dataset.step));
+    });
+
+    // type the code in, line by line, the first time the panel is seen
+    if (!prefersReduced) {
+      codeCard.classList.add('is-armed');
+      const typeObs = new IntersectionObserver(entries => {
+        if (entries.some(e => e.isIntersecting)) {
+          codeCard.classList.add('is-typed');
+          typeObs.disconnect();
+        }
+      }, { threshold: 0.2 });
+      typeObs.observe(codeCard);
+    }
+  }
+
+  /* ----------------------------------------------------------
+     7c. KINETIC TYPE — rotating role line, nav + label scrambles
+  ---------------------------------------------------------- */
+  const ticker = $('.role-ticker');
+  if (ticker && !prefersReduced) {
+    const roles = ticker.dataset.roles.split('|');
+    let ri = 0, heroVisible = true;
+    new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe($('#hero'));
+    setTimeout(() => {
+      setInterval(() => {
+        if (!heroVisible || document.hidden) return;
+        ri = (ri + 1) % roles.length;
+        scramble(ticker, roles[ri], { frames: 30 });
+      }, 2800);
+    }, 2600);
+  }
+
+  if (!prefersReduced && window.matchMedia('(hover: hover)').matches) {
+    $$('.nav__links a').forEach(a => {
+      const span = a.querySelector('span');
+      const label = span.textContent;
+      // plain glyphs here: the nav underline lives on span::after
+      a.addEventListener('mouseenter', () => scramble(span, label, { frames: 18, tint: false }));
+    });
+  }
+
+  const labelObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      scramble(el, el.textContent, { frames: 28 });
+      labelObs.unobserve(el);
+    });
+  }, { threshold: 1 });
+  $$('.section__index span:last-child').forEach(el => labelObs.observe(el));
+
+  /* ----------------------------------------------------------
+     7d. MARQUEE LEAN — skews with scroll speed, settles when you stop
+  ---------------------------------------------------------- */
+  const mqTrack = $('.marquee__track');
+  if (mqTrack && !prefersReduced) {
+    let lastY = window.scrollY, skew = 0, target = 0, raf = null;
+    const loop = () => {
+      skew = lerp(skew, target, 0.14);
+      target = lerp(target, 0, 0.1);
+      mqTrack.style.setProperty('--skew', skew.toFixed(2) + 'deg');
+      if (Math.abs(skew) > 0.03 || Math.abs(target) > 0.03) raf = requestAnimationFrame(loop);
+      else { mqTrack.style.setProperty('--skew', '0deg'); raf = null; }
+    };
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      target = clamp((lastY - y) * 0.3, -9, 9);
+      lastY = y;
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: true });
   }
 
   /* ----------------------------------------------------------
@@ -310,7 +518,9 @@
   ---------------------------------------------------------- */
   const bgStack = $('#bgStack');
   window.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'g' && bgStack) {
+    const t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    if (e.key.toLowerCase() === 'g' && bgStack && !e.metaKey && !e.ctrlKey && !e.altKey) {
       bgStack.style.transition = 'filter .28s var(--ease)';
       bgStack.style.filter = 'hue-rotate(180deg) saturate(1.6) blur(3px)';
       setTimeout(() => { bgStack.style.filter = ''; }, 280);
@@ -351,15 +561,22 @@
       id: 'about',
       kw: [['who are you', 4], ['about you', 4], ['tell me about', 3], ['who is saumya', 4], ['your story', 3], ['bio', 2], ['background', 2]],
       reply: () =>
-        `CS junior at UMBC (graduating Dec 2027), GPA 3.8, on the President's List. I just wrapped a software-engineering internship at <em>HeadsUp</em> (React Native + Firebase), and <em>Campusly</em> is live with 100+ users. I learn faster by shipping than studying, so I ship.`,
-      chips: ['Show me projects', 'School / GPA', 'Where are you based?'],
+        `CS junior at UMBC (graduating Dec 2027), GPA 3.8, on the President's List. 2026 so far: a software-engineering internship at <em>HeadsUp</em> (React Native + Firebase), a Peer Tutor role for UMBC's intro CS courses, and <em>Best Use of ElevenLabs</em> at hackUMBC with my team. <em>Campusly</em> is live with 100+ users. I learn faster by shipping than studying, so I ship.`,
+      chips: ['Show me projects', 'Hackathon win?', 'School / GPA'],
     },
     {
       id: 'headsup',
-      kw: [['headsup', 5], ['heads up', 5], ['react native', 4], ['firebase', 4], ['firestore', 4], ['expo', 3], ['swe', 3], ['software engineering intern', 5], ['internship', 3], ['mobile app', 3], ['leaderboard', 3], ['current job', 3], ['experience', 2]],
+      kw: [['headsup', 5], ['heads up', 5], ['react native', 4], ['firebase', 4], ['firestore', 4], ['expo', 3], ['swe', 3], ['software engineering intern', 5], ['internship', 3], ['mobile app', 3], ['leaderboard', 3], ['experience', 2]],
       reply: () =>
         `<em>HeadsUp — Software Engineering Intern</em> (Jun–Aug 2026), my best experience yet. Shipped 15+ screens of a cross-platform iOS/Android/web app in <em>React Native + Expo</em> — full light/dark design system, WCAG colour tokens, custom data viz. Architected a <em>Firebase/Firestore</em> backend across 9 collections with role-based security rules, then built a group-challenge & leaderboard system with a role-scoped admin console. <a href="https://www.linkedin.com/in/saumya31/details/experience/" target="_blank" rel="noopener">See it on LinkedIn →</a>`,
       chips: ['Show me projects', 'What\'s your stack?', 'How do I reach you?'],
+    },
+    {
+      id: 'carryover',
+      kw: [['carryover', 5], ['carry over', 5], ['hackathon', 5], ['hackumbc', 5], ['hack umbc', 5], ['elevenlabs', 5], ['eleven labs', 5], ['mlh', 4], ['award', 4], ['awards', 4], ['prize', 4], ['winner', 4], ['won', 2], ['win', 2], ['medical', 3], ['scribe', 4], ['clinical', 3], ['healthcare', 3]],
+      reply: () =>
+        `<em>Carryover</em> won <em>Best Use of ElevenLabs</em> (MLH track) at <em>hackUMBC 2026</em>. AI scribes turn a doctor's visit into a note and stop there — Carryover makes sure the note is right, complete and followed through: every sentence cites the transcript lines it came from, confidence is scored in code instead of taken on the model's word, a separate audit pass flags omissions, and the signed note becomes an office task list plus a plain-language patient summary in English or Spanish. Built with my team in one weekend on ElevenLabs Scribe v2 Medical, Gemini, Next.js and Postgres. <a href="https://github.com/dakhp43/OnePiece" target="_blank" rel="noopener">Repo →</a>`,
+      chips: ['Show me projects', 'How do you work?', 'How do I reach you?'],
     },
     {
       id: 'projects',
@@ -367,12 +584,13 @@
       reply: () =>
         `A few that matter:<br>
          • <em>HeadsUp</em> — my SWE internship; cross-platform React Native app + Firebase backend + leaderboard system<br>
+         • <em>Carryover</em> — won Best Use of ElevenLabs at hackUMBC 2026; makes AI medical notes traceable and complete<br>
+         • <em>OptionsLab</em> — from-scratch options pricing engine in Python (BSM, binomial, Monte Carlo, live IV smile)<br>
+         • <em>Prism</em> — privacy-first local LLM hub with hybrid RAG, citations and retrieval evals<br>
          • <em>Campusly</em> — campus social network, live at <a href="https://campusly.us" target="_blank" rel="noopener">campusly.us</a> with 100+ users<br>
          • <em>MoodMap</em> — OpenCV drowsiness detector using Eye Aspect Ratio<br>
-         • <em>Visionary</em> — YOLOv8 spatial narrator for the visually impaired<br>
-         • <em>IoT Soil Classifier</em> — Arduino sensor rig with crop recommendations<br>
          Ask me about any of them.`,
-      chips: ['Tell me about HeadsUp', 'Tell me about Campusly', 'Tell me about MoodMap'],
+      chips: ['Tell me about Carryover', 'Tell me about Prism', 'Tell me about OptionsLab'],
     },
     {
       id: 'campusly',
@@ -386,25 +604,25 @@
       kw: [['moodmap', 5], ['mood map', 5], ['drowsi', 3], ['fatigue', 3], ['ear', 2], ['blink', 3], ['eye aspect', 4]],
       reply: () =>
         `<em>MoodMap</em> — webcam drowsiness detector using Eye Aspect Ratio and blink frequency. Calibrates a baseline per user, then triggers audio-visual alerts when alertness dips. Python + OpenCV + a small JS frontend. <a href="https://github.com/Saumya-patel-31/Moodmap" target="_blank" rel="noopener">Repo →</a>`,
-      chips: ['Tell me about Visionary', 'Tell me about Campusly', 'What\'s your stack?'],
+      chips: ['Tell me about Prism', 'Tell me about OptionsLab', 'What\'s your stack?'],
     },
     {
-      id: 'visionary',
-      kw: [['visionary', 5], ['yolo', 3], ['visually impaired', 4], ['accessibility', 3], ['blind', 3], ['spatial', 2], ['object detection', 3]],
+      id: 'optionslab',
+      kw: [['optionslab', 5], ['options lab', 5], ['optionlab', 5], ['options pricing', 5], ['black scholes', 5], ['black-scholes', 5], ['quant', 4], ['finance', 3], ['greeks', 4], ['monte carlo', 4], ['binomial', 4], ['volatility', 4], ['trading', 3], ['streamlit', 4]],
       reply: () =>
-        `<em>Visionary</em> — turns a webcam into a spatial narrator for the visually impaired. YOLOv8 Nano detects objects in frame, pyttsx3 speaks them with directional context (left/right/centre) at 320px so the pipeline stays smooth on CPU. Flask + OpenCV backend, Tailwind + TypeScript frontend. <a href="https://github.com/Saumya-patel-31/Visionary" target="_blank" rel="noopener">Repo →</a>`,
-      chips: ['Tell me about MoodMap', 'Tell me about Campusly', 'See all projects'],
+        `<em>OptionsLab</em> — a from-scratch options pricing engine in <em>Python</em>. Three independent pricers (Black-Scholes-Merton closed-form, a binomial CRR tree, Monte Carlo GBM with antithetic variates) cross-validated for convergence, all five Greeks derived analytically, multi-leg strategy P&amp;L, and a live implied-vol smile solved per strike with Brent's method on real options-chain data. Streamlit dashboard + pytest suite. <a href="https://github.com/Saumya-patel-31/Optionslab" target="_blank" rel="noopener">Repo →</a>`,
+      chips: ['Tell me about Prism', 'What\'s your stack?', 'How do I reach you?'],
     },
     {
-      id: 'iot',
-      kw: [['iot', 4], ['arduino', 4], ['soil', 4], ['hardware', 3], ['sensor', 2], ['agriculture', 3]],
+      id: 'prism',
+      kw: [['prism', 5], ['local llm', 5], ['local model', 5], ['llm', 4], ['ollama', 5], ['rag', 5], ['retrieval', 4], ['embeddings', 4], ['bm25', 5], ['terraform', 4], ['privacy', 3], ['self-hosted', 4], ['self hosted', 4], ['language model', 4]],
       reply: () =>
-        `<em>IoT Agricultural Soil Classifier</em> (2023) — Arduino sensor rig logging moisture, pH and nutrients to SQL, then recommending crop types from soil conditions. My first dance with hardware, C++, and bugs that live in the physical world.`,
-      chips: ['Other projects', 'What\'s your stack?'],
+        `<em>Prism</em> — a privacy-first hub for chatting with local LLMs over your own documents, zero cloud calls. Hybrid RAG (dense embeddings + BM25, fused with Reciprocal Rank Fusion, de-duplicated with MMR) with inline citations, a self-generating eval suite that reports Hit@K / MRR / latency, smart routing to the best local model, and hardened auth. The demo is Terraform-deployed to S3 + CloudFront via GitHub Actions OIDC — <a href="https://d1eau8jaupf0cp.cloudfront.net" target="_blank" rel="noopener">try it</a> or <a href="https://github.com/Saumya-patel-31/Prism" target="_blank" rel="noopener">read the code →</a>`,
+      chips: ['Tell me about OptionsLab', 'Travel goals?', 'How do I reach you?'],
     },
     {
       id: 'peertutor',
-      kw: [['peer tutor', 5], ['peer education', 4], ['cmsc', 5], ['cmsc 201', 5], ['cmsc 202', 5], ['cmsc 203', 5], ['teaching', 4], ['teach', 3], ['tutoring', 3], ['mentor', 3], ['tutor', 2], ['currently', 2]],
+      kw: [['peer tutor', 5], ['peer education', 4], ['cmsc', 5], ['cmsc 201', 5], ['cmsc 202', 5], ['cmsc 203', 5], ['teaching', 4], ['teach', 3], ['tutoring', 3], ['mentor', 3], ['tutor', 2], ['currently', 2], ['current role', 4], ['current job', 4], ['doing now', 3]],
       reply: () =>
         `<em>Peer Tutor at UMBC</em> (Aug 2026 → now) — my current role. Selected on faculty recommendation to tutor all three intro CS sequences: <em>CMSC 201</em> (Python), <em>CMSC 202</em> (C++/OOP) and <em>CMSC 203</em> (Discrete Structures). In walk-in sessions I coach debugging, data structures, memory management and proof techniques — and push students to read their own compiler errors so they leave able to debug without me.`,
       chips: ['What have you built?', 'What\'s your stack?', 'How do I reach you?'],
@@ -427,7 +645,7 @@
       id: 'stack',
       kw: [['stack', 4], ['skills', 3], ['tech', 2], ['technolog', 3], ['tools', 2], ['languages', 2], ['frameworks', 3], ['what do you use', 4], ['what do you know', 3]],
       reply: () =>
-        `Day-to-day: <em>Next.js</em>, <em>Supabase</em>, <em>PostgreSQL</em>, <em>Python</em> & <em>OpenCV</em>, <em>C / C++</em>. Plus TypeScript, Tailwind, Flask, YOLOv8, Arduino, Pandas / NumPy / scikit-learn, and the boring-but-essential side: auth flows, RLS policies, deploy pipelines.`,
+        `Main language: <em>Python</em> — OpenCV, YOLOv8, Flask, Pandas / NumPy / scikit-learn. I also ship in <em>TypeScript</em> (<em>Next.js</em>, <em>React Native</em>, Tailwind) on <em>Supabase</em> / <em>Firebase</em> / <em>PostgreSQL</em>, plus <em>C / C++</em> and the ElevenLabs & Gemini APIs — and the boring-but-essential side: auth flows, security rules, tests, deploy pipelines.`,
       chips: ['Show me projects', 'Tell me about Campusly', 'How do I reach you?'],
     },
     {
@@ -451,8 +669,8 @@
       id: 'github',
       kw: [['github', 5], ['code', 1], ['repo', 3], ['source', 2]],
       reply: () =>
-        `GitHub: <a href="https://github.com/Saumya-patel-31" target="_blank" rel="noopener">github.com/Saumya-patel-31</a>. The Visionary and MoodMap repos are the most fun to skim.`,
-      chips: ['Tell me about MoodMap', 'Tell me about Visionary'],
+        `GitHub: <a href="https://github.com/Saumya-patel-31" target="_blank" rel="noopener">github.com/Saumya-patel-31</a>. Most fun to skim: <a href="https://github.com/Saumya-patel-31/Prism" target="_blank" rel="noopener">Prism</a>, <a href="https://github.com/Saumya-patel-31/Optionslab" target="_blank" rel="noopener">OptionsLab</a> and <a href="https://github.com/dakhp43/OnePiece" target="_blank" rel="noopener">Carryover</a> (our hackUMBC winner).`,
+      chips: ['Tell me about Prism', 'Tell me about OptionsLab'],
     },
     {
       id: 'location',
@@ -477,9 +695,9 @@
     },
     {
       id: 'process',
-      kw: [['process', 3], ['how do you work', 4], ['approach', 3], ['workflow', 3], ['methodology', 3]],
+      kw: [['process', 3], ['how do you work', 4], ['how do you build', 4], ['approach', 3], ['workflow', 3], ['methodology', 3]],
       reply: () =>
-        `Four steps: <em>(1)</em> write the problem in one sentence, <em>(2)</em> ugly clickable prototype by tomorrow, <em>(3)</em> lock down auth / RLS / empty states / loading states, <em>(4)</em> ship to production and listen to real users. Localhost answers your questions; production answers theirs.`,
+        `Same loop every build: <em>(1) Define</em> — the problem in one sentence plus the metric that proves it's solved. <em>(2) Prototype</em> — riskiest slice first, real data, zero polish. <em>(3) Harden</em> — auth, access rules, edge states, tests, fallbacks. <em>(4) Ship &amp; listen</em> — production is the real spec. That's how Carryover went from blank repo to a prize-winning demo in one weekend. <a href="#process">Watch it run as code →</a>`,
       chips: ['Show me projects', 'What\'s your stack?'],
     },
     {
@@ -551,7 +769,7 @@
       id: 'travel',
       kw: [['travel', 4], ['traveling', 4], ['travelling', 4], ['trip', 2], ['world', 2], ['country', 2], ['countries', 2], ['nomad', 4], ['digital nomad', 5], ['where do you want to go', 4]],
       reply: () =>
-        `Big plan: travel the world with my <em>local LLMs</em> running on the laptop the whole way. Remote work, slow pace, real places. Tech should fit in a backpack.`,
+        `Big plan: travel the world with my <em>local LLMs</em> running on the laptop the whole way — no cloud needed, which is the whole idea behind <em>Prism</em>. Remote work, slow pace, real places. Tech should fit in a backpack.`,
       chips: ['Dream job?', 'Where are you based?', 'How do I reach you?'],
     },
     {
@@ -695,7 +913,7 @@
     if (!log.children.length) {
       // seed greeting on first open
       addMsg(`Hey — I'm Saumya's auto-reply bot. I know this page (and a fair bit beyond it) inside out. Ask me anything, or pick a starter below.`, 'bot');
-      setChips(['What have you built?', 'What\'s your stack?', 'Dream job?', 'Are you a gamer?', 'How do I reach you?']);
+      setChips(['What have you built?', 'Current role?', 'Hackathon project?', 'Are you a gamer?', 'How do I reach you?']);
     }
     setTimeout(() => input.focus(), 280);
   }

@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0a0d14" />
-  <title>Saumya Patel — Full-Stack Developer & UMBC CS</title>
-  <meta name="description" content="Saumya Patel — Computer Science junior at UMBC and full-stack developer behind Campusly (100+ users). Next.js, Supabase, PostgreSQL, Python & OpenCV. Open to internships & co-ops." />
+  <title>Saumya Patel — Full-Stack Developer &amp; UMBC CS</title>
+  <meta name="description" content="UMBC CS junior and full-stack developer. SWE intern at HeadsUp, hackUMBC 2026 winner (MLH Best Use of ElevenLabs), builder of Campusly. Open to internships &amp; co-ops." />
   <meta name="author" content="Saumya Patel" />
-  <meta name="keywords" content="Saumya Patel, full-stack developer, UMBC, computer science, Next.js, Supabase, PostgreSQL, Python, OpenCV, Campusly, software engineer intern" />
+  <meta name="keywords" content="Saumya Patel, full-stack developer, software engineer intern, UMBC, computer science, hackUMBC, ElevenLabs, React Native, Next.js, TypeScript, Firebase, Supabase, PostgreSQL, Python, Campusly" />
   <link rel="canonical" href="https://saumya.world/" />
 
   <!-- Open Graph / social sharing -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Saumya Patel" />
-  <meta property="og:title" content="Saumya Patel — Full-Stack Developer & UMBC CS" />
-  <meta property="og:description" content="CS junior at UMBC and full-stack developer behind Campusly (100+ users). Ships real products — Next.js, Supabase, Python & OpenCV. Open to internships & co-ops." />
+  <meta property="og:title" content="Saumya Patel — Full-Stack Developer &amp; UMBC CS" />
+  <meta property="og:description" content="UMBC CS junior who ships real products: SWE intern at HeadsUp (React Native + Firebase), hackUMBC 2026 winner for Best Use of ElevenLabs, builder of Campusly (100+ users). Open to internships &amp; co-ops." />
   <meta property="og:url" content="https://saumya.world/" />
   <meta property="og:image" content="https://saumya.world/images/hero.png" />
   <meta property="og:image:alt" content="Saumya Patel — portfolio" />
@@ -22,8 +22,8 @@
 
   <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Saumya Patel — Full-Stack Developer & UMBC CS" />
-  <meta name="twitter:description" content="CS junior at UMBC and full-stack developer behind Campusly (100+ users). Next.js, Supabase, Python & OpenCV. Open to internships & co-ops." />
+  <meta name="twitter:title" content="Saumya Patel — Full-Stack Developer &amp; UMBC CS" />
+  <meta name="twitter:description" content="SWE intern at HeadsUp, hackUMBC 2026 winner (MLH Best Use of ElevenLabs), builder of Campusly. UMBC CS, open to internships &amp; co-ops." />
   <meta name="twitter:image" content="https://saumya.world/images/hero.png" />
 
   <!-- Structured data — helps Google show a rich person result -->
@@ -47,7 +47,8 @@
       "@type": "CollegeOrUniversity",
       "name": "University of Maryland, Baltimore County (UMBC)"
     },
-    "knowsAbout": ["React Native", "Firebase", "Next.js", "Supabase", "PostgreSQL", "Python", "OpenCV", "Full-stack development", "Computer Vision"],
+    "knowsAbout": ["Python", "TypeScript", "React Native", "Next.js", "Firebase", "Supabase", "PostgreSQL", "OpenCV", "ElevenLabs", "Full-stack development", "Computer Vision"],
+    "award": "hackUMBC 2026 — Best Use of ElevenLabs (MLH track)",
     "sameAs": [
       "https://github.com/Saumya-patel-31",
       "https://linkedin.com/in/saumya31",
@@ -71,6 +72,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- Icon sprite (reused via <use>) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/>
+      <path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5"/>
+      <path d="M12 14v4M8 21h8M9.5 18h5"/>
+    </symbol>
+  </svg>
 
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -98,6 +108,7 @@
     <div class="bg__layer" data-section="process" style="background-image:url('images/process.webp')"></div>
     <div class="bg__layer" data-section="contact" style="background-image:url('images/contact.webp')"></div>
 
+    <div class="bg__focus" id="bgFocus"></div>
     <div class="bg__tint"></div>
     <div class="bg__grain"></div>
     <div class="bg__vignette"></div>
@@ -132,7 +143,7 @@
   <section class="section hero" id="hero" data-bg="hero">
     <div class="hero__head">
       <span class="kbd">Portfolio</span>
-      <span class="kbd">UMBC · B.S. Computer Science</span>
+      <span class="kbd">UMBC · B.S. CS · Class of ’27</span>
     </div>
 
     <h1 class="hero__title reveal-lines">
@@ -142,11 +153,25 @@
     </h1>
 
     <div class="hero__foot">
-      <div class="hero__blurb">
-        <span class="dot-live"></span>
-        <p>Saumya Patel — full-stack developer &amp; UMBC CS junior.<br/>
-        Shipped <a href="https://campusly.us" target="_blank" rel="noopener" class="inline-link">campusly.us</a>
-        from localhost to production, now serving 100+ active users.</p>
+      <div class="hero__intro">
+        <p class="hero__name"><span class="dot-live" aria-hidden="true"></span>Saumya Patel</p>
+        <p class="hero__role">
+          <span class="sr-only">Full-stack developer, Python developer and CS peer tutor.</span>
+          <span class="role-ticker" aria-hidden="true"
+                data-roles="Full-stack developer|Python developer|CS peer tutor @ UMBC">Full-stack developer</span>
+        </p>
+        <p class="hero__blurb">
+          SWE intern at <b>HeadsUp</b> (summer ’26, React Native + Firebase), CS peer
+          tutor at UMBC, and builder of
+          <a href="https://campusly.us" target="_blank" rel="noopener" class="inline-link">campusly.us</a>
+          (100+ users).
+        </p>
+        <div class="hero__ctas">
+          <a class="btn btn--solid" href="#work" data-cursor="btn">See my work <span aria-hidden="true">↓</span></a>
+          <a class="btn" href="mailto:saumyapatel566@gmail.com" data-cursor="btn">Email me</a>
+          <a class="btn btn--ghost" href="https://www.linkedin.com/in/saumya31" target="_blank" rel="noopener" data-cursor="btn">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a class="btn btn--ghost" href="https://github.com/Saumya-patel-31" target="_blank" rel="noopener" data-cursor="btn">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
 
       <a class="scroll-hint" href="#about" data-cursor="link">
@@ -164,20 +189,20 @@
   <!-- ============ MARQUEE ============ -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee__track">
-      <span>React Native</span><span>◆</span>
+      <span>Python &amp; OpenCV</span><span>◆</span>
       <span>Next.js</span><span>◆</span>
+      <span>React Native</span><span>◆</span>
       <span>Firebase</span><span>◆</span>
       <span>Supabase</span><span>◆</span>
       <span>PostgreSQL</span><span>◆</span>
-      <span>Python &amp; OpenCV</span><span>◆</span>
       <span>C / C++</span><span>◆</span>
       <span>Data Structures</span><span>◆</span>
-      <span>React Native</span><span>◆</span>
+      <span>Python &amp; OpenCV</span><span>◆</span>
       <span>Next.js</span><span>◆</span>
+      <span>React Native</span><span>◆</span>
       <span>Firebase</span><span>◆</span>
       <span>Supabase</span><span>◆</span>
       <span>PostgreSQL</span><span>◆</span>
-      <span>Python &amp; OpenCV</span><span>◆</span>
       <span>C / C++</span><span>◆</span>
       <span>Data Structures</span><span>◆</span>
     </div>
@@ -196,18 +221,20 @@
       </h2>
 
       <div class="about__body">
-        <p class="about__para reveal">
+        <p class="about__para" data-scrub>
           Somewhere between a <em>3.8 GPA</em> and a long string of late-night
           side projects, I figured out that I learn faster by shipping than by
           studying. So I do — .edu OTP auth, Supabase Realtime DMs, OpenCV blink
-          detectors, Arduino soil sensors. Whatever the problem rewards, I pick
-          up and wire together.
+          detectors, cross-platform React Native screens, an ElevenLabs
+          speech pipeline. Whatever the problem rewards, I pick up and wire
+          together.
         </p>
 
         <ul class="about__stats">
-          <li class="reveal"><b>3.8</b><span>GPA · President's List</span></li>
-          <li class="reveal"><b>100+</b><span>Active users on Campusly</span></li>
-          <li class="reveal"><b>10+</b><span>Languages in rotation</span></li>
+          <li class="reveal"><b data-count="3.8" data-decimals="1">3.8</b><span>GPA · President's List</span></li>
+          <li class="reveal"><b data-count="100" data-suffix="+">100+</b><span>Active users on Campusly</span></li>
+          <li class="reveal"><b data-count="15" data-suffix="+">15+</b><span>App screens shipped at HeadsUp</span></li>
+          <li class="reveal"><b data-count="3">3</b><span>Intro CS courses I tutor · CMSC 201–203</span></li>
         </ul>
       </div>
     </div>
@@ -227,12 +254,17 @@
 
     <div class="work__list">
 
+      <h3 class="work__group">
+        <span class="work__group-key">A</span>
+        <span class="work__group-name">Experience</span>
+        <span class="work__group-note">Roles &amp; internships</span>
+      </h3>
       <a class="project reveal" href="https://www.linkedin.com/in/saumya31/details/experience/" target="_blank" rel="noopener" data-cursor="view" data-index="01">
         <div class="project__meta">
           <span>01 / Software Engineering Internship</span>
           <span>Jun 2026 — Aug 2026</span>
         </div>
-        <h3 class="project__title">HeadsUp — Software Engineering Intern</h3>
+        <h4 class="project__title">HeadsUp — Software Engineering Intern</h4>
         <p class="project__desc">
           My best build to date. Shipped 15+ screens of a cross-platform
           (iOS / Android / web) app in React Native &amp; Expo — a full
@@ -257,7 +289,7 @@
           <span>02 / Peer Tutor · UMBC</span>
           <span>Aug 2026 — Present</span>
         </div>
-        <h3 class="project__title">UMBC Computer Science — Peer Tutor</h3>
+        <h4 class="project__title">UMBC Computer Science — Peer Tutor</h4>
         <p class="project__desc">
           Selected on faculty recommendation to tutor all three of UMBC's
           introductory CS sequences — <em>CMSC 201</em> (Python),
@@ -278,7 +310,7 @@
           <span>03 / Student Ambassador</span>
           <span>Feb 2026 — Sep 2026</span>
         </div>
-        <h3 class="project__title">TutorMatch — Student Ambassador</h3>
+        <h4 class="project__title">TutorMatch — Student Ambassador</h4>
         <p class="project__desc">
           Running multi-platform referral campaigns across UMBC Snapchat
           communities, Instagram, TikTok and Discord to recruit tutors for
@@ -292,12 +324,101 @@
         </div>
       </a>
 
-      <a class="project reveal" href="https://campusly.us" target="_blank" rel="noopener" data-cursor="view" data-index="04">
+      <a class="project reveal" href="https://linkedin.com/in/saumya31" target="_blank" rel="noopener" data-cursor="view" data-index="04">
         <div class="project__meta">
-          <span>04 / Full-stack</span>
+          <span>04 / Consulting simulations</span>
+          <span>2023</span>
+        </div>
+        <h4 class="project__title">Forage · BCG X · Accenture · KPMG</h4>
+        <p class="project__desc">
+          Three virtual internships across data science, analytics &amp;
+          consulting. Framed hypotheses, ran EDA, engineered features, trained
+          a supervised model, then packaged findings into client-facing
+          presentations in each firm's voice. A good reminder that a chart is
+          only as good as the story you wrap around it. Full write-ups live on
+          my LinkedIn experience page.
+        </p>
+        <div class="project__tags">
+          <span>Pandas</span><span>NumPy</span><span>scikit-learn</span><span>Tableau</span>
+        </div>
+      </a>
+
+      <h3 class="work__group">
+        <span class="work__group-key">B</span>
+        <span class="work__group-name">Projects &amp; wins</span>
+        <span class="work__group-note">Shipped, launched, awarded</span>
+      </h3>
+      <a class="project project--featured reveal" id="carryover" href="https://github.com/dakhp43/OnePiece" target="_blank" rel="noopener" data-cursor="view" data-index="05">
+        <div class="project__meta">
+          <span>05 / Hackathon · Health AI</span>
+          <span>Sep 2026</span>
+        </div>
+        <div class="project__main">
+          <span class="project__award"><svg width="14" height="14" aria-hidden="true"><use href="#i-trophy"/></svg>Winner · MLH Best Use of ElevenLabs · hackUMBC 2026</span>
+          <h4 class="project__title">Carryover — AI Medical Notes You Can Trust</h4>
+        </div>
+        <p class="project__desc">
+          AI scribes turn a doctor's visit into a note — then stop. Carryover
+          picks up where they leave off: every sentence in the draft cites the
+          transcript lines it came from, confidence is scored in code instead of
+          taking the model's word for it, a separate audit pass flags what the
+          note missed, and the signed note becomes an office task list plus a
+          plain-language patient summary in English or Spanish. Built with my
+          team in one weekend on ElevenLabs Scribe v2 Medical, Gemini, Next.js
+          and Postgres.
+        </p>
+        <div class="project__tags">
+          <span>ElevenLabs</span><span>Gemini</span><span>Next.js</span><span>TypeScript</span><span>Postgres</span>
+        </div>
+      </a>
+
+      <a class="project reveal" href="https://github.com/Saumya-patel-31/Optionslab" target="_blank" rel="noopener" data-cursor="view" data-index="06">
+        <div class="project__meta">
+          <span>06 / Quant · Python</span>
+          <span>Summer 2026</span>
+        </div>
+        <h4 class="project__title">OptionsLab — Options Pricing Engine</h4>
+        <p class="project__desc">
+          A from-scratch options pricing engine in Python with three independent
+          pricers — Black-Scholes-Merton (closed-form), a binomial CRR tree and
+          Monte Carlo GBM with antithetic variates — cross-validated for
+          convergence against each other. All five Greeks derived analytically,
+          multi-leg strategy P&amp;L (spreads, straddles, iron condors), and a
+          live implied-volatility smile solved strike by strike with Brent's
+          method on real options-chain data. Streamlit dashboard, pytest suite.
+        </p>
+        <div class="project__tags">
+          <span>Python</span><span>NumPy</span><span>SciPy</span><span>Streamlit</span><span>pytest</span>
+        </div>
+      </a>
+
+      <a class="project reveal" href="https://github.com/Saumya-patel-31/Prism" target="_blank" rel="noopener" data-cursor="view" data-index="07">
+        <div class="project__meta">
+          <span>07 / AI · Local LLMs</span>
+          <span>Sep 2026</span>
+        </div>
+        <h4 class="project__title">Prism — Privacy-First Local LLM Hub</h4>
+        <p class="project__desc">
+          Chat with local models over your own documents, with zero cloud calls.
+          Hybrid RAG fuses dense embeddings with BM25 via Reciprocal Rank Fusion,
+          de-duplicates with MMR and answers with inline citations — and a
+          self-generating eval suite proves retrieval works (Hit@K, MRR,
+          latency). Routes each prompt to the best local model, benchmarks up to
+          six side by side, and ships hardened auth (scrypt, HMAC-signed
+          sessions, rate limiting) plus a Terraform-deployed demo on S3 +
+          CloudFront via GitHub Actions OIDC.
+        </p>
+        <div class="project__tags">
+          <span>TypeScript</span><span>Next.js</span><span>Ollama</span><span>SQLite</span><span>Terraform</span>
+        </div>
+      </a>
+
+      <a class="project reveal" href="https://campusly.us" target="_blank" rel="noopener" data-cursor="view" data-index="08">
+        <div class="project__meta">
+          <span>08 / Full-stack</span>
           <span>Mar 2026</span>
         </div>
-        <h3 class="project__title">Campusly — Campus Social Network</h3>
+        <h4 class="project__title">Campusly — Campus Social Network</h4>
         <p class="project__desc">
           Live in production at <em>campusly.us</em> with 100+ active users.
           Built .edu email OTP auth, a PostgreSQL schema for posts, comments
@@ -310,12 +431,12 @@
         </div>
       </a>
 
-      <a class="project reveal" href="https://github.com/Saumya-patel-31/Moodmap" target="_blank" rel="noopener" data-cursor="view" data-index="05">
+      <a class="project reveal" href="https://github.com/Saumya-patel-31/Moodmap" target="_blank" rel="noopener" data-cursor="view" data-index="09">
         <div class="project__meta">
-          <span>05 / Computer Vision</span>
+          <span>09 / Computer Vision</span>
           <span>Apr 2025</span>
         </div>
-        <h3 class="project__title">MoodMap — Real-Time Fatigue Tracker</h3>
+        <h4 class="project__title">MoodMap — Real-Time Fatigue Tracker</h4>
         <p class="project__desc">
           A webcam-based drowsiness detector using the Eye Aspect Ratio (EAR)
           and blink frequency. Calibrates a baseline per user, then triggers
@@ -324,60 +445,6 @@
         </p>
         <div class="project__tags">
           <span>Python</span><span>OpenCV</span><span>JavaScript</span><span>HTML/CSS</span>
-        </div>
-      </a>
-
-      <a class="project reveal" href="https://github.com/Saumya-patel-31/Visionary" target="_blank" rel="noopener" data-cursor="view" data-index="06">
-        <div class="project__meta">
-          <span>06 / Accessibility · CV</span>
-          <span>Open source</span>
-        </div>
-        <h3 class="project__title">Visionary — Spatial Awareness for the Visually Impaired</h3>
-        <p class="project__desc">
-          A real-time accessibility tool that turns a webcam into a spatial
-          narrator. YOLOv8 Nano detects objects in frame and pyttsx3 speaks
-          them aloud with directional context — left, right, centre — at
-          320px resolution so the whole pipeline stays smooth on CPU. Flask
-          and OpenCV on the backend, a Tailwind + TypeScript interface on top.
-        </p>
-        <div class="project__tags">
-          <span>Python</span><span>YOLOv8</span><span>OpenCV</span><span>Flask</span><span>TypeScript</span>
-        </div>
-      </a>
-
-      <article class="project reveal" data-cursor="locked" data-index="07">
-        <div class="project__meta">
-          <span>07 / IoT · Hardware</span>
-          <span>Jul 2023</span>
-        </div>
-        <h3 class="project__title">IoT Agricultural Soil Classifier</h3>
-        <p class="project__desc">
-          An Arduino-driven sensor rig that logs moisture, pH and nutrient
-          readings to a SQL database, then recommends crop types based on the
-          measured soil conditions. My first real dance with hardware, C++,
-          and the joy of debugging something that lives in the physical world.
-        </p>
-        <div class="project__tags">
-          <span>Arduino</span><span>C++</span><span>SQL</span>
-        </div>
-      </article>
-
-      <a class="project reveal" href="https://linkedin.com/in/saumya31" target="_blank" rel="noopener" data-cursor="view" data-index="08">
-        <div class="project__meta">
-          <span>08 / Consulting simulations</span>
-          <span>2023</span>
-        </div>
-        <h3 class="project__title">Forage · BCG X · Accenture · KPMG</h3>
-        <p class="project__desc">
-          Three virtual internships across data science, analytics &amp;
-          consulting. Framed hypotheses, ran EDA, engineered features, trained
-          a supervised model, then packaged findings into client-facing
-          presentations in each firm's voice. A good reminder that a chart is
-          only as good as the story you wrap around it. Full write-ups live on
-          my LinkedIn experience page.
-        </p>
-        <div class="project__tags">
-          <span>Pandas</span><span>NumPy</span><span>scikit-learn</span><span>Tableau</span>
         </div>
       </a>
 
@@ -396,7 +463,7 @@
       <span class="line"><span>nobody asked for.</span></span>
     </h2>
 
-    <p class="art__para reveal">
+    <p class="art__para" data-scrub>
       I care about the twenty milliseconds between a click and a response, the
       weight of a single word in a button, and whether an empty state looks
       lived-in or abandoned. Code is the easy half — taste is what makes a
@@ -422,48 +489,78 @@
     </div>
 
     <h2 class="process__headline reveal-lines">
-      <span class="line"><span>Spec less.</span></span>
-      <span class="line"><span>Ship sooner.</span></span>
-      <span class="line"><span><em>Listen harder.</em></span></span>
+      <span class="line"><span>The loop behind</span></span>
+      <span class="line"><span>everything</span></span>
+      <span class="line"><span><em>I ship.</em></span></span>
     </h2>
 
-    <ol class="timeline">
-      <li class="timeline__step reveal">
-        <span class="timeline__num">01</span>
-        <div>
-          <h4>Write the problem down in one sentence.</h4>
-          <p>Before a schema or a Figma, I force the problem into a single line.
-          If I can't, I'm not ready — and neither is the build.</p>
+    <p class="process__lede reveal">
+      Four steps I run on every build — a weekend hackathon or a production
+      app. Here's each one, with the receipts.
+    </p>
+
+    <div class="process__grid">
+      <ol class="timeline" id="processSteps">
+        <li class="timeline__step" data-step="1">
+          <span class="timeline__num">01</span>
+          <div class="timeline__body">
+            <span class="timeline__kicker">Define</span>
+            <h4>One sentence. One number.</h4>
+            <p>Before any schema or screen, I write the problem as a single
+            sentence and pick the metric that would prove it's solved. If I
+            can't, I'm not ready to build — and neither is the scope.</p>
+            <p class="timeline__proof"><span>Proof</span>Campusly — “a network only verified students can join” → .edu OTP auth + campus-scoped Row-Level Security.</p>
+          </div>
+        </li>
+        <li class="timeline__step" data-step="2">
+          <span class="timeline__num">02</span>
+          <div class="timeline__body">
+            <span class="timeline__kicker">Prototype</span>
+            <h4>Riskiest slice first. Real data, zero polish.</h4>
+            <p>I build the scariest part end-to-end before anything pretty. A
+            rough prototype surfaces the hard problems in hours; a polished
+            mock hides them for weeks.</p>
+            <p class="timeline__proof"><span>Proof</span>Carryover — blank repo to a prize-winning demo in one weekend at hackUMBC 2026.</p>
+          </div>
+        </li>
+        <li class="timeline__step" data-step="3">
+          <span class="timeline__num">03</span>
+          <div class="timeline__body">
+            <span class="timeline__kicker">Harden</span>
+            <h4>The work users never notice.</h4>
+            <p>Auth, access rules, empty / loading / error states, tests, and a
+            fallback for when an API goes down. Boring on purpose — it's what
+            turns a demo into something you'd trust with real users.</p>
+            <p class="timeline__proof"><span>Proof</span>HeadsUp — role-based Firestore security rules across 9 collections, plus static analysis and live-database validation.</p>
+          </div>
+        </li>
+        <li class="timeline__step" data-step="4">
+          <span class="timeline__num">04</span>
+          <div class="timeline__body">
+            <span class="timeline__kicker">Ship &amp; listen</span>
+            <h4>Production is the real spec.</h4>
+            <p>Ship early, put it in front of real people, and let what they
+            actually do — not what I assumed — set the next priority. The
+            version that launches is a first draft.</p>
+            <p class="timeline__proof"><span>Proof</span>HeadsUp — TestFlight beta for user-acceptance testing on iOS, Android &amp; web. Campusly — live with 100+ users.</p>
+          </div>
+        </li>
+      </ol>
+
+      <figure class="code-card" id="codeCard">
+        <div class="code-card__bar">
+          <span class="code-card__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="code-card__file">process.py</span>
+          <span class="code-card__lang">Python</span>
         </div>
-      </li>
-      <li class="timeline__step reveal">
-        <span class="timeline__num">02</span>
-        <div>
-          <h4>Ugly prototype by tomorrow.</h4>
-          <p>A rough, clickable slice running on localhost beats a polished
-          mock every time. The sooner I get to a real interaction, the sooner
-          the build stops lying to me about what works.</p>
-        </div>
-      </li>
-      <li class="timeline__step reveal">
-        <span class="timeline__num">03</span>
-        <div>
-          <h4>Lock it down.</h4>
-          <p>Auth flows, RLS policies, empty states, loading states,
-          keyboard traps. Boring work. It's where a side project becomes
-          something you'd let a real user touch.</p>
-        </div>
-      </li>
-      <li class="timeline__step reveal">
-        <span class="timeline__num">04</span>
-        <div>
-          <h4>Ship to production, then listen.</h4>
-          <p>Campusly only started meaning something the day strangers signed
-          up. Localhost answers your questions; production answers theirs.
-          The interface that launches is a first draft.</p>
-        </div>
-      </li>
-    </ol>
+        <pre class="code-card__body" tabindex="0" aria-label="My process written as a Python function"><code><span class="code-line" data-step="0"><span class="c"># process.py — the loop behind everything I ship</span></span><span class="code-line" data-step="0"><span class="k">async</span> <span class="k">def</span> <span class="f">ship</span>(idea: <span class="t">Idea</span>) -&gt; <span class="t">NoReturn</span>:</span><span class="code-line code-line--step" data-step="1">    <span class="c"># 01 · define — one sentence, one number</span></span><span class="code-line" data-step="1">    problem = <span class="f">define</span>(idea).<span class="f">in_one_sentence</span>()</span><span class="code-line" data-step="1">    metric = problem.<span class="f">success_metric</span>()</span><span class="code-line code-line--blank" data-step="0"> </span><span class="code-line code-line--step" data-step="2">    <span class="c"># 02 · prototype — riskiest slice first, real data</span></span><span class="code-line" data-step="2">    build = <span class="k">await</span> <span class="f">prototype</span>(problem.<span class="f">riskiest_slice</span>())</span><span class="code-line code-line--blank" data-step="0"> </span><span class="code-line code-line--step" data-step="3">    <span class="c"># 03 · harden — the work users never notice</span></span><span class="code-line" data-step="3">    build = <span class="f">harden</span>(build, [auth, rules, edge_states, tests])</span><span class="code-line code-line--blank" data-step="0"> </span><span class="code-line code-line--step" data-step="4">    <span class="c"># 04 · ship, then listen — production is the real spec</span></span><span class="code-line" data-step="4">    app = <span class="k">await</span> <span class="f">deploy</span>(build, <span class="p">env</span>=<span class="s">&quot;production&quot;</span>)</span><span class="code-line" data-step="4">    <span class="k">async</span> <span class="k">for</span> feedback <span class="k">in</span> app.<span class="f">real_users</span>():</span><span class="code-line" data-step="4">        <span class="k">await</span> app.<span class="f">iterate</span>(feedback, <span class="p">toward</span>=metric)</span><span class="code-line" data-step="0"><span class="caret" aria-hidden="true"></span></span></code></pre>
+        <figcaption class="code-card__status">
+          <span>⎇ main</span>
+          <span id="codeStatus">Ln 1, Col 1</span>
+          <span>UTF-8 · Python</span>
+        </figcaption>
+      </figure>
+    </div>
   </section>
 
   <!-- ============ CONTACT ============ -->
@@ -497,13 +594,11 @@
       </div>
       <div class="contact__col reveal">
         <span class="contact__label">Now</span>
-        <p>Junior year at UMBC (graduating Dec 2027), currently a
-        <em>CS Peer Tutor</em> for the intro CMSC sequences. Just wrapped a
-        <em>software-engineering internship at HeadsUp</em> (React Native +
-        Firebase). Open to <em>internships &amp; co-ops</em> — engineering,
-        product, data, or any role where a curious junior gets to ship work
-        that real users see. Happy to talk about anything from React Native
-        and Supabase to Python and Arduino.</p>
+        <p>Junior at UMBC (graduating Dec 2027) and a <em>CS Peer Tutor</em>
+        for the intro CMSC sequences. Summer ’26: <em>SWE intern at HeadsUp</em>.
+        Fall ’26: <em>Best Use of ElevenLabs</em> at hackUMBC. Open to
+        <em>internships &amp; co-ops</em> — engineering, product, data, or any
+        role where I get to ship work real users see.</p>
       </div>
       <div class="contact__col reveal">
         <span class="contact__label">Based in</span>
